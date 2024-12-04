@@ -14,5 +14,38 @@ datasource db {
 }
 
 // add models (tables) //
+model User {
+  id       String   @id @default(cuid())
+  email    String   @unique
+  password String
+  folders  Folder[] 
+  files    File[]   
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String   
+  user      User     @relation(fields: [userId], references: [id])
+  files     File[]   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, userId]) 
+}
+
+model File {
+  id        String   @id @default(cuid())
+  name      String
+  folderId  String  
+  folder    Folder  @relation(fields: [folderId], references: [id])
+  userId    String   
+  user      User     @relation(fields: [userId], references: [id])
+  size      Int      
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, folderId]) 
+}
 
 // users, folders, files // 
